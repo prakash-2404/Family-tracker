@@ -4,6 +4,22 @@ import pg from "pg";
 
 const app = express();
 const port = 3000;
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: "postgresql://postgres:xCtxsXvyTTnAXVuSnZAyOPtxILkTpuTt@caboose.proxy.rlwy.net:33993/railway",
+  ssl: { rejectUnauthorized: false }, // Required for Railway
+});
+
+pool.query("SELECT NOW()", (err, res) => {
+  if (err) {
+    console.error("Database connection error:", err);
+  } else {
+    console.log("Connected to Railway DB:", res.rows);
+  }
+});
+
+module.exports = pool;
 
 const db = new pg.Client({
   user: "postgres",
