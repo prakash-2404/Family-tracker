@@ -13,15 +13,17 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Required for Railway
 });
 
-pool.query("SELECT NOW()", (err, res) => {
-  if (err) {
-    console.error("Database connection error:", err);
-  } else {
-    console.log("Connected to Railway DB:", res.rows);
-  }
-});
+// Test the connection
+try {
+  const client = await pool.connect();
+  const res = await client.query("SELECT NOW()");
+  console.log("Connected to Railway DB at:", res.rows[0].now);
+  client.release();
+} catch (err) {
+  console.error("Database connection error:", err);
+}
 
-module.exports = pool;
+export default pool;
 
 const db = new pg.Client({
   user: "postgres",
