@@ -1,35 +1,40 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import dotenv from 'dotenv';
+import pkg from "pg";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
-const { Pool } = pg;
+const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // ✅ Required for Render PostgreSQL
-  },
+  connectionString: process.env.DATBASE_URL,
+  ssl: { rejectUnauthorized: false }, // Required for Railway
 });
 
-pool.connect()
-  .then(() => console.log("✅ Connected to Render PostgreSQL"))
-  .catch(err => console.error("❌ Connection Error:", err));
+// Test the connection
+try {
+  const client = await pool.connect();
+  const res = await client.query("SELECT NOW()");
+  console.log("Connected to Railway DB at:", res.rows[0].now);
+  client.release();
+} catch (err) {
+  console.error("Database connection error:", err);
+}
 
 export default pool;
 
-const db = new pg.Client({ 
-  user: "postgresql",
-  host: "dpg-cuu3g89opnds739sdha0-a.oregon-postgres.render.com",
-  database: "world_7f75", 
-  password: "uKdxiIkIPoomw4IcmE44Mi9K4xqw4bNM", 
-  port: 5432
-})
+const db = new pg.Client({
+  user: "postgres",
+  host: "shortline.proxy.rlwy.net",
+  database: "railway",
+  password: "wjzMUTwneOXoYReGYNLFIQfxghidKlbh",
+  port: 11270,
+});
 db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
