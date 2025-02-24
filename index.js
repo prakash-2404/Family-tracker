@@ -1,39 +1,48 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import pkg from "pg";
 import dotenv from "dotenv";
+// import pkg from "pg";
+
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
-const { Pool } = pkg;
+// const { Pool } = pkg;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Required for Railway
-});
+// const pool = new Pool({
+//   connectionString: "postgresql://postgres:xCtxsXvyTTnAXVuSnZAyOPtxILkTpuTt@caboose.proxy.rlwy.net:33993/railway",
+//   ssl: { rejectUnauthorized: false }, // Required for Railway
+// });
 
-// Test the connection
-try {
-  const client = await pool.connect();
-  const res = await client.query("SELECT NOW()");
-  console.log("Connected to Railway DB at:", res.rows[0].now);
-  client.release();
-} catch (err) {
-  console.error("Database connection error:", err);
-}
+// // Test the connection
+// try {
+//   const client = await pool.connect();
+//   const res = await client.query("SELECT NOW()");
+//   console.log("Connected to Railway DB at:", res.rows[0].now);
+//   client.release();
+// } catch (err) {
+//   console.error("Database connection error:", err);
+// }
 
-export default pool;
+// export default pool;
 
-const db = new pg.Client({
+// const db = new pg.Client({
+//   user: "postgres",
+//   host: "caboose.proxy.rlwy.net",
+//   database: "railway",
+//   password: "xCtxsXvyTTnAXVuSnZAyOPtxILkTpuTt",
+//   port: 33993,
+// });
+
+const db = new pg.Client({ 
   user: "postgres",
-  host: "caboose.proxy.rlwy.net",
-  database: "railway",
-  password: "xCtxsXvyTTnAXVuSnZAyOPtxILkTpuTt",
-  port: 33993,
-});
+  host: "localhost",
+  database: "world", 
+  password: "kutty", 
+  port: 5432
+})
 db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
