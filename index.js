@@ -2,14 +2,16 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import pkg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 3000;
 
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: "postgresql://postgres:xCtxsXvyTTnAXVuSnZAyOPtxILkTpuTt@caboose.proxy.rlwy.net:33993/railway",
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }, // Required for Railway
 });
 
