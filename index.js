@@ -43,7 +43,7 @@ app.use(express.static("public"));
 let currentUserId = 1;
 
 let users = [];
-
+let error;
 async function checkVisisted() {
   const result = await db.query("SELECT country_code FROM visited_countries WHERE user_id = $1", [currentUserId]);
   let countries = [];
@@ -93,9 +93,29 @@ app.post("/add", async (req, res) => {
       res.redirect("/");
     } catch (err) {
       console.log(err);
+      const countries = await checkVisisted();
+      const userId = await getCurrentUser();
+      res.render("index.ejs", {
+        countries: countries,
+        total: countries.length,
+        users: users,
+        color: userId.color,
+        error: "Country Already exist, try Another.",
+    });
+
     }
   } catch (err) {
     console.log(err);
+    const countries = await checkVisisted();
+    const userId = await getCurrentUser();
+    res.render("index.ejs", {
+      countries: countries,
+      total: countries.length,
+      users: users,
+      color: userId.color,
+      error: "Country name does not exist, try again.",
+  });
+
   }
 });
 app.post("/user", async (req, res) => {
